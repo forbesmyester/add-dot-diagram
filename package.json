@@ -1,0 +1,30 @@
+{
+  "name": "add-dot-diagram",
+  "version": "0.9.0",
+  "description": "Class that adds a HTTP server and then can print out GraphViz/DOT messages",
+  "main": "index.js",
+  "directories": {
+    "test": "test"
+  },
+  "scripts": {
+    "test": "node test.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git@github.com:forbesmyester/add-dot-diagram.git"
+  },
+  "author": "Matthew Forrester <github.com@speechmarks.com>",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/forbesmyester/add-dot-diagram/issues"
+  },
+  "homepage": "https://github.com/forbesmyester/add-dot-diagram",
+  "dependencies": {
+    "finalhandler": "^0.4.0",
+    "get_tlid_encoder_decoder": "^0.9.4",
+    "serve-static": "^1.10.0"
+  },
+  "devDependencies": {
+    "eslint": "^0.24.0"
+  }
+}
