@@ -4,7 +4,7 @@ evtSource.onmessage = function(evt) {
     if (evt.lastEventId.match(/^[^e].*/)) { return; }
     try {
         document.getElementById("diagram").innerHTML = Viz(
-            evt.data,
+            JSON.parse(evt.data),
             "svg"
         );
     } catch (e) {

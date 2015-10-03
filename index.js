@@ -3,7 +3,7 @@ var http = require('http'),
     serveStatic = require('serve-static');
 
 function getWriteSseData(id, data) {
-    return ['id: ' + id, 'data: ' + data].join("\n") + "\n\n";
+    return ['id: ' + id, 'data: ' + JSON.stringify(data)].join("\n") + "\n\n";
 }
 
 module.exports = function addDotDiagramServer(port) {
@@ -34,7 +34,7 @@ module.exports = function addDotDiagramServer(port) {
             myRes.write(getWriteSseData('initial', {}));
 
             setInterval(function() {
-                eConnect('t-', {});
+                eConnect('t-', '');
             }, 10000);
 
             if (current) {
@@ -50,7 +50,7 @@ module.exports = function addDotDiagramServer(port) {
     }).listen(port);
 
     return function postDotSrc(dotSrc) {
-        eConnect('e-', { dot: dotSrc });
+        eConnect('e-', dotSrc );
         current = dotSrc;
     };
 
