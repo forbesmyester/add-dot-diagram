@@ -1,6 +1,7 @@
 var http = require('http'),
     finalhandler = require('finalhandler'),
-    serveStatic = require('serve-static');
+    serveStatic = require('serve-static'),
+    path = require('path');
 
 function getWriteSseData(id, data) {
     return ['id: ' + id, 'data: ' + JSON.stringify(data)].join("\n") + "\n\n";
@@ -10,7 +11,10 @@ module.exports = function addDotDiagramServer(port) {
 
     var t = 0,
         resses = [],
-        serve = serveStatic('public', {'index': ['index.html']}),
+        serve = serveStatic(
+            path.join(__dirname, 'public'),
+            {'index': ['index.html']}
+        ),
         current;
 
     function eConnect(letter, data) {
@@ -38,7 +42,6 @@ module.exports = function addDotDiagramServer(port) {
                 eConnect('t-', '');
             }, 10000);
 
-            console.log("C: ", current);
             var index = resses.push(res) - 1;
 
             if (current) {
