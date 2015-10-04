@@ -9,43 +9,51 @@ function getWriteSseData(id, data) {
 module.exports = function addDotDiagramServer(port) {
 
     var t = 0,
-        myRes,
+        resses = [],
         serve = serveStatic('public', {'index': ['index.html']}),
         current;
 
     function eConnect(letter, data) {
-        if (myRes) {
-            return myRes.write(getWriteSseData(letter + t, data));
+        for (var i = 0, l = resses.length; i < l; i++) {
+            if (resses[i] !== null) {
+                resses[i].write(
+                    getWriteSseData(letter + t, data)
+                );
+            }
         }
-        current = data;
     }
 
     http.createServer(function(req, res) {
 
-        myRes = res;
-
         if (req.url == '/evt') {
-            myRes.writeHead(200, {
+            res.writeHead(200, {
                 'Content-Type': 'text/event-stream',
                 'Cache-Control': 'no-cache',
                 'Connection': 'keep-alive'
             });
 
-            myRes.write(getWriteSseData('initial', {}));
+            res.write(getWriteSseData('initial', {}));
 
             setInterval(function() {
                 eConnect('t-', '');
             }, 10000);
 
+            console.log("C: ", current);
+            var index = resses.push(res) - 1;
+
             if (current) {
-                eConnect('e-', current);
+                eConnect('e-', current );
             }
+
+            req.on('end', function() {
+                resses[index] = null;
+            });
 
             return;
         }
 
-        var done = finalhandler(req, myRes);
-        serve(req, myRes, done);
+        var done = finalhandler(req, res);
+        serve(req, res, done);
 
     }).listen(port);
 
@@ -55,3 +63,4 @@ module.exports = function addDotDiagramServer(port) {
     };
 
 };
+
