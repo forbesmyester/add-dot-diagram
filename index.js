@@ -1,7 +1,7 @@
-var http = require('http'),
-    finalhandler = require('finalhandler'),
-    serveStatic = require('serve-static'),
+var express = require('express'),
     path = require('path');
+
+/* eslint no-console: 0 */
 
 function getWriteSseData(id, data) {
     return ['id: ' + id, 'data: ' + JSON.stringify(data)].join("\n") + "\n\n";
@@ -9,12 +9,10 @@ function getWriteSseData(id, data) {
 
 module.exports = function addDotDiagramServer(port) {
 
+    var app = express();
+
     var t = 0,
         resses = [],
-        serve = serveStatic(
-            path.join(__dirname, 'public'),
-            {'index': ['index.html']}
-        ),
         current;
 
     function eConnect(letter, data) {
@@ -27,43 +25,47 @@ module.exports = function addDotDiagramServer(port) {
         }
     }
 
-    http.createServer(function(req, res) {
+    app.use(express.static(path.join(__dirname, 'public')));
 
-        if (req.url == '/evt') {
-            res.writeHead(200, {
-                'Content-Type': 'text/event-stream',
-                'Cache-Control': 'no-cache',
-                'Connection': 'keep-alive'
-            });
+    app.get('/evt', function(req, res) {
 
-            res.write(getWriteSseData('initial', {}));
+        res.writeHead(200, {
+            'Content-Type': 'text/event-stream',
+            'Cache-Control': 'no-cache',
+            'Connection': 'keep-alive'
+        });
 
-            setInterval(function() {
-                eConnect('t-', '');
-            }, 10000);
+        res.write(getWriteSseData('initial', {}));
 
-            var index = resses.push(res) - 1;
+        setInterval(function() {
+            eConnect('t-', '');
+        }, 10000);
 
-            if (current) {
-                eConnect('e-', current );
-            }
+        var index = resses.push(res) - 1;
 
-            req.on('end', function() {
-                resses[index] = null;
-            });
-
-            return;
+        if (current) {
+            eConnect('e-', current );
         }
 
-        var done = finalhandler(req, res);
-        serve(req, res, done);
+        req.on('end', function() {
+            resses[index] = null;
+        });
 
-    }).listen(port);
+        return;
+    });
 
-    return function postDotSrc(dotSrc) {
+    app.listen(port, function() {
+        console.log("Listening on port " + port);
+    });
+
+    function postDotSrc(dotSrc) {
         eConnect('e-', dotSrc );
         current = dotSrc;
-    };
+    }
+
+    postDotSrc.app = app;
+
+    return postDotSrc;
 
 };
 

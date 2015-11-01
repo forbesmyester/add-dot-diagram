@@ -1,6 +1,6 @@
 {
   "name": "add-dot-diagram",
-  "version": "0.9.4",
+  "version": "0.9.5",
   "description": "Class that adds a HTTP server and then can print out GraphViz/DOT messages",
   "main": "index.js",
   "directories": {
@@ -20,6 +20,7 @@
   },
   "homepage": "https://github.com/forbesmyester/add-dot-diagram",
   "dependencies": {
+    "express": "^4.13.3",
     "finalhandler": "^0.4.0",
     "get_tlid_encoder_decoder": "^0.9.4",
     "serve-static": "^1.10.0"
