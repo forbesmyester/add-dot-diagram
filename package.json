@@ -1,6 +1,6 @@
 {
   "name": "add-dot-diagram",
-  "version": "0.9.3",
+  "version": "0.9.4",
   "description": "Class that adds a HTTP server and then can print out GraphViz/DOT messages",
   "main": "index.js",
   "directories": {
