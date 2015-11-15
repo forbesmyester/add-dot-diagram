@@ -55,7 +55,7 @@ module.exports = function addDotDiagramServer(port) {
     });
 
     app.listen(port, function() {
-        console.log("Listening on port " + port);
+        console.log("Add Dot Diagram / Visualize Listening on port " + port);
     });
 
     function postDotSrc(dotSrc) {
